@@ -17,7 +17,7 @@ Our artifact includes the following directories:
       "s1": { "p4_src":"basic_forward.p4"  },
       "s2": { "p4_src":"basic_forward.p4"  },
       "s3": { "cpu_port":true,"p4_src":"fapm.p4"}
-    }
+}
 ```
 - Run the topology and controller:
 ```
