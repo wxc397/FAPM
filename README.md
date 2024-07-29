@@ -20,7 +20,7 @@ Our artifact includes the following directories:
     }
 ```
 - Run the topology:
-  ```
+```
 sudo p4run
-  ```
+```
 
