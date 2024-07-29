@@ -219,9 +219,7 @@ class WXCController(object):
         sniff(iface=cpu_port_intf,prn=self.recv_msg_cpu)
 
 
-if __name__ == '__main__':
-    #controller = WXCController()
-    
+if __name__ == '__main__': 
     controller = WXCController().run_cpu_port_loop()
 
     '''
