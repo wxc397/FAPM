@@ -1,1 +1,11 @@
-
+	table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x800000&&&0x800000 => 0 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x400000&&&0xc00000 => 1 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x200000&&&0xe00000 => 2 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x100000&&&0xf00000 => 3 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x080000&&&0xf80000 => 4 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x040000&&&0xfc0000 => 5 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x020000&&&0xfe0000 => 6 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x010000&&&0xff0000 => 7 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x008000&&&0xff8000 => 8 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x004000&&&0xffc000 => 9 1 
+        table_add MyIngress.divide set_r_multiple 0x800000&&&0x800000 0x002000&&&0xffe000 => 10 1 
