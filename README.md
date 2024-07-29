@@ -19,5 +19,8 @@ Our artifact includes the following directories:
       "s3": { "cpu_port":true,"p4_src":"basic.p4"}
     }
 ```
-
+- Run the topology:
+  ```
+sudo p4run
+  ```
 
