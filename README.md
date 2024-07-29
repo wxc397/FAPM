@@ -11,5 +11,13 @@ Our artifact includes the following directories:
 **controller**:the python code for controller Determination of Cluster Centers
 
 # Experiment
+- Configure the BMv2 switch with different P4 code:
+```
+"switches": {
+      "s1": { "p4_src":"basic_forward.p4"  },
+      "s2": { "p4_src":"basic_forward.p4"  },
+      "s3": { "cpu_port":true,"p4_src":"basic.p4"}
+    }
+```
 
 
