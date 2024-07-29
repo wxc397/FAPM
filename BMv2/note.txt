@@ -1,0 +1,30 @@
+The code we provide here uses a division table to set the pre-defined result (from s3-command.txt). The another way is to use the binary search to find the highest-1 and calculate the difference. The code is as belows:
+
+action highest_index(bit<32> a,bit<32> b){//本函数返回一个数的二进制表示的最高位的位置
+		bit<6> n=0;
+     	bit<32> temp_a;
+     	temp_a=a;
+     	
+     	
+     	if((temp_a>>16)==0) {n=n+16;temp_a=temp_a<<16;}
+		if((temp_a>>24)==0) {n=n+8;temp_a=temp_a<<8;}	
+		if((temp_a>>28)==0) {n=n+4;temp_a=temp_a<<4;}
+		if((temp_a>>30)==0) {n=n+2;temp_a=temp_a<<2;}
+		n=n-((bit<6>)(temp_a>>31));
+		n=31-n;
+		highest_index_a=n;
+     	
+		
+		n=0;
+		bit<32> temp_b;
+		temp_b=b;
+		if((temp_b>>16)==0) {n=n+16;temp_b=temp_b<<16;}
+		if((temp_b>>24)==0) {n=n+8;temp_b=temp_b<<8;}	
+		if((temp_b>>28)==0) {n=n+4;temp_b=temp_b<<4;}
+		if((temp_b>>30)==0) {n=n+2;temp_b=temp_b<<2;}
+		n=n-((bit<6>)(temp_b>>31));
+		n=31-n;
+     	highest_index_b=n;
+		
+		
+	}
