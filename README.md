@@ -8,7 +8,7 @@ Our artifact includes the following directories:
 
 **BMv2/**:the P4 code of FAPM
 
-**controller/**:the python code for controller Determination of Cluster Centers
+**controller/**:the python code for controller and the determination of cluster centers
 
 # Experiment
 - Configure the BMv2 switch with different P4 code:
