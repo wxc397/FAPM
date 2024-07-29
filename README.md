@@ -19,8 +19,9 @@ Our artifact includes the following directories:
       "s3": { "cpu_port":true,"p4_src":"basic.p4"}
     }
 ```
-- Run the topology:
+- Run the topology and controller:
 ```
 sudo p4run
+sudo python controller.py
 ```
 
