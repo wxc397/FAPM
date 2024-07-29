@@ -1,4 +1,8 @@
-The code we provide here uses a division table to set the pre-defined result (from s3-command.txt). The another way is to use the binary search to find the highest-1 and calculate the difference. The code is as belows:
+The code we provide here uses a division table to set the pre-defined result (from sw-command/s3.txt).
+use the command "simple_switch_CLI --thrift-port 9092 < s3.txt" to apply these table entries.
+
+
+The another way is to use the binary search to find the highest-1 and calculate the difference. The code is as belows:
 
 action highest_index(bit<32> a,bit<32> b){//本函数返回一个数的二进制表示的最高位的位置
 		bit<6> n=0;
