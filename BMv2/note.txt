@@ -4,7 +4,7 @@ use the command "simple_switch_CLI --thrift-port 9092 < s3.txt" to apply these t
 
 The another way is to use the binary search to find the highest-1 and calculate the difference. The code is as belows:
 
-action highest_index(bit<32> a,bit<32> b){//本函数返回一个数的二进制表示的最高位的位置
+action highest_index(bit<32> a,bit<32> b){//This function returns the position of the highest bit in the binary representation of a number.
 		bit<6> n=0;
      	bit<32> temp_a;
      	temp_a=a;
