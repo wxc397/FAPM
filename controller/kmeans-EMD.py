@@ -22,9 +22,7 @@ def loadTestData(fileName):
             TestData.append([float(row[1])/sum_row,float(row[2])/sum_row,float(row[3])/sum_row,float(row[4])/sum_row,float(row[5])/sum_row,float(row[6])/sum_row,float(row[7])/sum_row,float(row[8])/sum_row,float(row[9])/sum_row,float(row[10])/sum_row,float(row[11])/sum_row])
             TestLabel.append(int(row[12]))
 
-def EMD(point1,point2):#计算距离（wasserstein距离）
-    #P = np.array([1, 2, 1, 0, 0, 0])
-    #Q = np.array([0, 0, 0, 1, 2, 1])
+def EMD(point1,point2):# Calculate distance (Wasserstein distance)
     # dists = [i for i in range(len(point1))] #(1)linear
     # dists=[0,2,4,8,16,32,64,128,256,512,1024] #(2)exponent
     dists=[0,1,4,9,16,25,36,49,64,81,100] #(3)square
@@ -32,53 +30,53 @@ def EMD(point1,point2):#计算距离（wasserstein距离）
     return D
 
 
-def distance(point1, point2):  # 计算距离（欧几里得距离）
+def distance(point1, point2):  # alculate distance (Euclidean distance)
     return np.sqrt(np.sum((point1 - point2) ** 2))
 
 
 def k_means(data, k, max_iter=10000):
-    centers = {}  # 初始聚类中心
-    # 初始化，随机选k个样本作为初始聚类中心。 random.sample(): 随机不重复抽取k个值
-    n_data = data.shape[0]  # 样本个数
+    centers = {}  # initial cluster center
+    # randomly selecting k samples as the initial cluster centersr
+    n_data = data.shape[0]  # number of samples
     for idx, i in enumerate(random.sample(range(n_data), k)):
-        # idx取值范围[0, k-1]，代表第几个聚类中心;  data[i]为随机选取的样本作为聚类中心
+        # The value range of idx is [0, k-1], representing the number of cluster centers; Data [i] is a randomly selected sample used as the clustering center
         centers[idx] = data[i]
 
-        # 开始迭代
-    for i in range(max_iter):  # 迭代次数
-        print("开始第{}次迭代".format(i + 1))
-        clusters = {}  # 聚类结果，聚类中心的索引idx -> [样本集合]
-        for j in range(k):  # 初始化为空列表
+        # start iterating
+    for i in range(max_iter):  
+        print("start iteration No {}".format(i + 1))
+        clusters = {}  # Cluster result, index idx of cluster center ->[sample set]
+        for j in range(k):  # Initialize as an empty list
             clusters[j] = []
             clusters[j].append(centers[j])
 
-        for sample in data:  # 遍历每个样本
-            distances = []  # 计算该样本到每个聚类中心的距离 (只会有k个元素)
-            for c in centers:  # 遍历每个聚类中心
-                # 添加该样本点到聚类中心的距离
+        for sample in data:  # Traverse each sample
+            distances = []  # Calculate the distance from the sample to each cluster center (there will only be k elements)
+            for c in centers:  # Traverse each cluster center
+                # Add the distance from the sample point to the cluster center
                 distances.append(EMD(sample, centers[c]))
-            idx = np.argmin(distances)  # 最小距离的索引
-            clusters[idx].append(sample)  # 将该样本添加到第idx个聚类中心
+            idx = np.argmin(distances)  # Index of minimum distance
+            clusters[idx].append(sample)  # Add the sample to the idxth cluster center
 
-        pre_centers = centers.copy()  # 记录之前的聚类中心点
+        pre_centers = centers.copy()  # Record the previous cluster center points
 
         for c in clusters.keys():
-            # 重新计算中心点（计算该聚类中心的所有样本的均值）
+            # Recalculate the center point (calculate the mean of all samples in the cluster center)
             centers[c] = np.mean(clusters[c], axis=0)
 
         is_convergent = True
         for c in centers:
-            if EMD(pre_centers[c], centers[c]) > 1e-5:  # 中心点是否变化
+            if EMD(pre_centers[c], centers[c]) > 1e-5:  # Has the center point changed
                 is_convergent = False
                 break
         if is_convergent == True:
-            # 如果新旧聚类中心不变，则迭代停止
+            # If the new and old cluster centers remain unchanged, the iteration stops
             break
     return centers, clusters
 
 
-def predict(p_data, centers):  # 预测新样本点所在的类
-    # 计算p_data 到每个聚类中心的距离，然后返回距离最小所在的聚类。
+def predict(p_data, centers):  # Predict the class where the new sample point is located
+    # Calculate the distance from p to each cluster center, and then return the cluster with the minimum distance.
     distances = [EMD(p_data, centers[c]) for c in centers]
     return np.argmin(distances)
 
@@ -89,13 +87,13 @@ TestLabel=[]
 
 if __name__ == '__main__':
 
-    loadTrainData("D:\TNSM-revise\实验\kmeans聚类-240720\kmeans聚类\\k折交叉验证\\k5\\train-k5.csv")
+    loadTrainData("D:\\k5\\train-k5.csv")
     x=np.array(TrainData)
     centers,clusters=k_means(x,2)
 
     print(centers)
 
-    loadTestData("D:\TNSM-revise\实验\kmeans聚类-240720\kmeans聚类\\k折交叉验证\\k5\\test-k5.csv")
+    loadTestData("D:\\k5\\test-k5.csv")
     print("TestLable",TestLabel)
     y=np.array(TestData)
     TestSampleLen=y.shape[0]
@@ -121,9 +119,6 @@ if __name__ == '__main__':
         else:
             TN += 1
 
-
-
-    print("准确率",(TruePredict/TestSampleLen)*100,"%")
     print("TP:",TP)
     print("TN",TN)
     print("FP:",FP)
@@ -136,8 +131,3 @@ if __name__ == '__main__':
     print("precision:", precision)
     print("recall:", recall)
     print("f1:", f1)
-
-    #print("test0",TestData[0])
-    #print("test1",TestData[1])
-    #print(EMD(TestData[0],TestData[1]))
-    #print(EMD([0.5,0.5,0,0,0,0,0,0,0,0,0],[0,0,1,0,0,0,0,0,0,0,0]))
