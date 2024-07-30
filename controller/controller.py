@@ -32,7 +32,6 @@ class WXCController(object):
         self.connect_to_switches()
 
         # initializes the switch
-        # resets all registers, configures the 3 x 2 hash functions
         # reads the registers
         # populates the tables and mirroring id
         self.init()
@@ -71,11 +70,11 @@ class WXCController(object):
                 port = self.topo.node_to_node_port_num(sw,host)
                 controller.table_add("remove_loss_header", "remove_header", [str(port)], [])
 
-    #不能这样直接用，要改一下 
+  
     def add_clone_session(self):
         #for p4rtswitch,controller in self.controllers.items():
 
-            #cpu_port =  self.topo.get_cpu_port_index(p4rtswitch)#得到交换机的cpu_port
+            #cpu_port =  self.topo.get_cpu_port_index(p4rtswitch)
             #if cpu_port:
                 #controller.mirroring_add(5,[cpu_port])
         self.controllers['s3'].mirroring_add(5,4)
@@ -143,7 +142,7 @@ class WXCController(object):
 
         return res
 
-    def EMD(self,point1,point2):#计算距离（wasserstein距离）
+    def EMD(self,point1,point2):# calculate the EMD distance
         #dists = [i for i in range(len(point1))]
         dists=[0,2,4,8,16,32,64,128,256,512,1024]
         #dists=[0,1,4,9,16,25,36,49,64,81,100]
@@ -152,7 +151,7 @@ class WXCController(object):
 
 
 
-    def recv_msg_cpu(self,pkt):#试着加了一个参数switch_name  看能不能行:不能行
+    def recv_msg_cpu(self,pkt):
         
         packet=Ether(raw(pkt))
         if packet.type==0x1234 and self.order!=0:
@@ -173,12 +172,12 @@ class WXCController(object):
             #print("curr_wind",curr_wind)
             D0=self.EMD(center_0,curr_wind)
             D1=self.EMD(center_1,curr_wind)
-            if D0>D1:#说明是异常窗口
+            if D0>D1:# abnormal window
                 self.count+=1
                 if self.count==1:
                     self.controllers['s3'].register_write('state_flag', [0, 1], 1)
-                elif self.count>=3:#就说明攻击发生了 该缓解了
-                    #下发缓解表项
+                elif self.count>=3:#attack determination; begin to mitigate
+                    #add mitigation entries
                     key_record=[]
                     for key,value in self.buffer.items():
                         if value>=3:
@@ -187,9 +186,7 @@ class WXCController(object):
                             key_record.append(key)
                     for i in range(len(key_record)):
                         del(self.buffer[key_record[i]])
-                    #self.controllers['s3'].register_write('state_flag',[0,1],0)
-                    #self.count=0#这句话应该也删掉
-                    #self.buffer.clear()#buffer不应该清空
+                    
             elif self.count>0:
                 self.controllers['s3'].register_write('state_flag', [0, 1], 0)
                 self.count=0
@@ -200,7 +197,7 @@ class WXCController(object):
         #else:
             #print("not 1234!")
         self.order=self.order+1
-        #定位反射流
+        #located amplification flows
         if packet.type==0x4321:
             heavyinfo_header=HeavyinfoHeader(bytes(packet.load))
             flow_ID=(heavyinfo_header.ip1,heavyinfo_header.ip2)
