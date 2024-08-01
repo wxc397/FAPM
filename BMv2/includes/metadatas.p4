@@ -1,7 +1,7 @@
 struct metadata {
     /* empty */
     
-    bit<1> direction;//0:前向   1:后向
+    bit<1> direction;//0:forward   1:background
     //5-tuple
     
     bit<16> srcport;
@@ -63,14 +63,14 @@ struct metadata {
     bit<24> o2;
   	
   	@field_list(100)  
-    bit<48> last_wind_end;//上一个窗口的结束时间
+    bit<48> last_wind_end;//the end timepoint of last window
     @field_list(100)
     bit<10> order;
     
 
     
     @field_list(100)
-    bit<32> r_multiple;//2^x(0 1 2 3 4 5 6 7 8 9 10)
+    bit<32> r_multiple; //2^x(0 1 2 3 4 5 6 7 8 9 10)
     bit<8> temp;
    
 
