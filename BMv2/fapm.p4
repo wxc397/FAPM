@@ -86,8 +86,8 @@ control MyIngress(inout headers hdr,
     
     
     
-    action set_direction(){//direction标志好像没啥用呢 
-    	meta.direction=1w1;//默认前向
+    action set_direction(){
+    	meta.direction=1w1; //default forward
     	
     	meta.totallen=((bit<48>)hdr.ipv4.totalLen)<<24;
     	meta.ip1=hdr.ipv4.srcAddr;
@@ -95,7 +95,7 @@ control MyIngress(inout headers hdr,
     	meta.port1=meta.srcport;
     	meta.port2=meta.dstport;
     	
-    	if(hdr.ipv4.srcAddr>hdr.ipv4.dstAddr)//后向
+    	if(hdr.ipv4.srcAddr>hdr.ipv4.dstAddr) //backward
     	{
     		meta.direction=1w0;
     		meta.totallen=(bit<48>) hdr.ipv4.totalLen;
@@ -199,7 +199,7 @@ control MyIngress(inout headers hdr,
     	
     }
     
-//6种动作模式 
+//six swapping modes 
 
 	//1.action x_t()
 	//2.action x_n1()
@@ -215,10 +215,10 @@ control MyIngress(inout headers hdr,
 		last_wind_end.read(meta.last_wind_end,0); 
 		meta.next_flag_x_y=0;
 		meta.next_flag_t_n1_n2=0;
-		 if(standard_metadata.ingress_global_timestamp-meta.last_wind_end>=WINDOW)//时间窗口结束
+		 if(standard_metadata.ingress_global_timestamp-meta.last_wind_end>=WINDOW) //Wt end
     	 {
     	 	meta.next_flag_x_y=0;
-    	 	meta.next_flag_t_n1_n2=1;//从Wt切换到Wn1
+    	 	meta.next_flag_t_n1_n2=1; //从Wt-->Wn1
     	 }
 	
 	}
@@ -232,17 +232,17 @@ control MyIngress(inout headers hdr,
 		last_wind_end.read(meta.last_wind_end,0); 
 		meta.next_flag_x_y=1;
 		meta.next_flag_t_n1_n2=0;
-		 if(standard_metadata.ingress_global_timestamp-meta.last_wind_end>=WINDOW)//时间窗口结束
+		 if(standard_metadata.ingress_global_timestamp-meta.last_wind_end>=WINDOW) //Wt end
     	 {
     	 	meta.next_flag_x_y=1;
-    	 	meta.next_flag_t_n1_n2=1;//从Wt切换到Wn1
+    	 	meta.next_flag_t_n1_n2=1;// 从Wt-->Wn1
     	 }
 		
 	
 	}
 	
 	
-	action x_n1(){//compute //好像还是得放到apply里//稍等一下
+	action x_n1(){ //compute
 		//set_direction();
 		get_index();
 		store_in_x();
@@ -257,7 +257,7 @@ control MyIngress(inout headers hdr,
 
 	}
 	
-	action y_n1(){//compute
+	action y_n1(){ //compute
 		//set_direction();
 		get_index();
 		store_in_y();
@@ -273,7 +273,7 @@ control MyIngress(inout headers hdr,
 			
 	}
 	
-	action x_n2(){//clear
+	action x_n2(){ //clear
 		//set_direction();
 		get_index();
 		store_in_x();
@@ -291,7 +291,7 @@ control MyIngress(inout headers hdr,
 		
 	}
 	
-	action y_n2(){//clear
+	action y_n2(){ //clear
 		//set_direction();
 		get_index();
 		store_in_y();
@@ -310,9 +310,7 @@ control MyIngress(inout headers hdr,
 	}
 	
 
-
-      
-//6种动作模式    
+ 
     
     table what_todo{
     
@@ -340,7 +338,7 @@ apply {
    if (hdr.ipv4.isValid()){
     	
     	set_direction();
-    	if(mitigation.apply().hit==false){//该包属于非攻击流
+    	if(mitigation.apply().hit==false){ //the packet belongs to benign flows
     	
     	
     	
@@ -348,7 +346,7 @@ apply {
     	what_todo.apply();
     	
     	state_flag.read(meta.light_or_heavy,0);
-    	if(meta.length_h1==0 || meta.length_h2==0){//只有新流才需要记录index
+    	if(meta.length_h1==0 || meta.length_h2==0){ //only the new flow needs to be recorded the index
     		
     		
     		if(meta.flag_x_y==0){
@@ -382,7 +380,7 @@ apply {
     	
     	
     	
-    	if(meta.flag_t_n1_n2==1)//协助计算reserving sketch
+    	if(meta.flag_t_n1_n2==1) //assisting computing the flows in the reserving sketch
     	{
     		if(meta.flag_x_y==0){
     			indicator_y.read(meta.pointer_y,0);
@@ -433,7 +431,7 @@ apply {
 		
 				}
 				divide.apply();
-				//在这上报heavy_info
+				//upload heavy_info
 				if(meta.light_or_heavy==1){
 					clone_preserving_field_list(CloneType.I2E,5,100);
 				}
@@ -449,7 +447,7 @@ apply {
 			flag_t_n1_n2.write(0,meta.next_flag_t_n1_n2);
 			if(meta.next_flag_t_n1_n2==2){
 				order.write(0,10w0);
-				//是不是应该在这里上报
+				
 				multiple_vector.read(meta.flows_0,0);multiple_vector.write(0,0);
     			multiple_vector.read(meta.flows_1,1);multiple_vector.write(1,0);
     			multiple_vector.read(meta.flows_2,2);multiple_vector.write(2,0);
@@ -463,7 +461,7 @@ apply {
     			multiple_vector.read(meta.flows_10,10);multiple_vector.write(10,0);
 				
 				
-				if(meta.flag_x_y==0){//补丁
+				if(meta.flag_x_y==0){
 					indicator_y.write(0,0);
 				}else{
 					indicator_x.write(0,0);
